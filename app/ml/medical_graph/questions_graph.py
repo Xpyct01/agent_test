@@ -66,7 +66,7 @@ class QuestionsGraph:
                 ("user", "Given question: {question}")
             ])
             clue_prompt = clue_prompt_template.invoke({"question": state["current_question"]})
-            clue = self.model.invoke(clue_prompt)["content"]
+            clue = self.model.invoke(clue_prompt).content
 
         node_output = {
             "question_decision": decision.result, "answer": state["answer"],

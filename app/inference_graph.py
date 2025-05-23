@@ -75,7 +75,7 @@ class InferenceGraph:
         self.records_db.insert_one(record)
 
     def inference(self, query):
-        config = {"configurable": {"thread_id": query.thread_id}}
+        config = {"configurable": {"thread_id": query.session_id}}
         input_state = self.graph.get_state(config)
 
         if len(input_state.interrupts) > 0:
@@ -87,10 +87,11 @@ class InferenceGraph:
         output_state = self.graph.get_state(config)
         if '__interrupt__' in graph_output:
             output = graph_output['__interrupt__'][0].value
-        elif 'delay' in output_state.values:
+        elif output_state.values.get('delay', None) is not None:
             record = self.get_record(query.user_id, output_state.values)
             self.insert_record(record)
             output = f"You have an appointment with a {record['doctor']} on {record['date']}"
+            self.graph.update_state(config, {'delay': None})
         else:
             output = graph_output['messages'][-1].content
 

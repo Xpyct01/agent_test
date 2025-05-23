@@ -17,7 +17,7 @@ graph = InferenceGraph(memory, records_db, model_provider)
 
 class Query(BaseModel):
     user_id: int
-    thread_id: int
+    session_id: str
     message: str
 
 
